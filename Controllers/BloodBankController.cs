@@ -155,8 +155,8 @@ namespace BloodBankWebAPI.Controllers
 
             if (!string.IsNullOrEmpty(bloodType))
             {
-                //case insensitive and partial search
-                bloodBankResults = bloodBankResults.Where(e => e.BloodType.Contains(bloodType, StringComparison.OrdinalIgnoreCase));
+                //case insensitive 
+                bloodBankResults = bloodBankResults.Where(e => e.BloodType.Equals(bloodType, StringComparison.OrdinalIgnoreCase));
             }
             else
             {
