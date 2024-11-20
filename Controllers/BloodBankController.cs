@@ -149,7 +149,7 @@ namespace BloodBankWebAPI.Controllers
 
         //Search for blood bank entries based on BloodType
         [HttpGet("search/bloodtype")]
-        public ActionResult<IEnumerable<BloodBankEntry>> SearchByBloodType(string bloodType = null)
+        public ActionResult<IEnumerable<BloodBankEntry>> SearchByBloodType(string bloodType)
         {
             var bloodBankResults = BloodBanksList.AsQueryable();
 
@@ -158,12 +158,19 @@ namespace BloodBankWebAPI.Controllers
                 //case insensitive and partial search
                 bloodBankResults = bloodBankResults.Where(e => e.BloodType.Contains(bloodType, StringComparison.OrdinalIgnoreCase));
             }
+            else
+            {
+
+                return BadRequest("bloodType parameter is required.");
+
+            }
             return bloodBankResults.ToList();
         }
 
         //Search for blood bank entries based on status
         [HttpGet("search/status")]
-        public ActionResult<IEnumerable<BloodBankEntry>> SearchByStatus(string status = null)
+        public ActionResult<IEnumerable<BloodBankEntry>> SearchByStatus(string status)
+
         {
             var bloodBankResults = BloodBanksList.AsQueryable();
 
@@ -172,7 +179,13 @@ namespace BloodBankWebAPI.Controllers
                 //case insensitive and partial search
                 bloodBankResults = bloodBankResults.Where(e => e.Status.Contains(status, StringComparison.OrdinalIgnoreCase));
             }
-            return bloodBankResults.ToList();
+            else
+            {
+               
+              return BadRequest("Status parameter is required.");
+                
+            }
+            return bloodBankResults.ToList().Any()?bloodBankResults.ToList(): NotFound("No blood bank entries found."); ;
         }
 
         //sorting
