@@ -133,27 +133,12 @@ namespace BloodBankWebAPI.Controllers
             return paginatedEntries.Any()?paginatedEntries:NoContent();
         }
 
-
-        //Search for blood bank entries
-        [HttpGet("search")]
-        public ActionResult<IEnumerable<BloodBankEntry>> SearchEntries(string bloodType = null, string? status=null,string donorName = null)
+        //Search for blood bank entries based on donorName
+        [HttpGet("search/donorname")]
+        public ActionResult<IEnumerable<BloodBankEntry>> SearchByDonorName(string donorName = null)
         {
             var bloodBankResults = BloodBanksList.AsQueryable();
-            //Search for blood bank entries based on blood type.
-            if (!string.IsNullOrEmpty(bloodType))
-            {
-                //exact search
-                bloodBankResults = bloodBankResults.Where(e => e.BloodType.Equals(bloodType, StringComparison.OrdinalIgnoreCase));
-            }
-
-            //Search for blood bank entries based on status.
-            if (!string.IsNullOrEmpty(status))
-            {
-                //case insensitive exact search
-                bloodBankResults = bloodBankResults.Where(e => e.Status.Equals(status, StringComparison.OrdinalIgnoreCase));
-            }
-
-            //Search for blood bank entries based on donorName
+           
             if (!string.IsNullOrEmpty(donorName))
             {
                 //case insensitive and partial search
@@ -162,12 +147,39 @@ namespace BloodBankWebAPI.Controllers
             return bloodBankResults.ToList();
         }
 
+        //Search for blood bank entries based on BloodType
+        [HttpGet("search/bloodtype")]
+        public ActionResult<IEnumerable<BloodBankEntry>> SearchByBloodType(string bloodType = null)
+        {
+            var bloodBankResults = BloodBanksList.AsQueryable();
+
+            if (!string.IsNullOrEmpty(bloodType))
+            {
+                //case insensitive and partial search
+                bloodBankResults = bloodBankResults.Where(e => e.BloodType.Contains(bloodType, StringComparison.OrdinalIgnoreCase));
+            }
+            return bloodBankResults.ToList();
+        }
+
+        //Search for blood bank entries based on status
+        [HttpGet("search/status")]
+        public ActionResult<IEnumerable<BloodBankEntry>> SearchByStatus(string status = null)
+        {
+            var bloodBankResults = BloodBanksList.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                //case insensitive and partial search
+                bloodBankResults = bloodBankResults.Where(e => e.Status.Contains(status, StringComparison.OrdinalIgnoreCase));
+            }
+            return bloodBankResults.ToList();
+        }
 
         //sorting
         [HttpGet("sort")]
-        public ActionResult<IEnumerable<BloodBankEntry>> SortBloodBanks(string sortBy="BloodType",string sortOrder = "asc")
+        public ActionResult<IEnumerable<BloodBankEntry>> SortBloodBanks(string sortBy = "BloodType", string sortOrder = "asc")
         {
-            var bloodBankResults=BloodBanksList.AsQueryable();
+            var bloodBankResults = BloodBanksList.AsQueryable();
             if (sortBy.ToLower() == "bloodtype")
             {
 
@@ -188,6 +200,33 @@ namespace BloodBankWebAPI.Controllers
             return bloodBankResults.ToList();
         }
 
+        //Search for blood bank entries
+        [HttpGet("filter")]
+        public ActionResult<IEnumerable<BloodBankEntry>> SearchEntries(string bloodType = null, string? status=null,string donorName = null)
+        {
+            var bloodBankResults = BloodBanksList.AsQueryable();
+            //Search for blood bank entries based on blood type.
+            if (!string.IsNullOrEmpty(bloodType))
+            {
+                //exact search
+                bloodBankResults = bloodBankResults.Where(e => e.BloodType.Equals(bloodType, StringComparison.OrdinalIgnoreCase));
+            }
+
+            //Search for blood bank entries based on status.
+            if (!string.IsNullOrEmpty(status))
+            {
+                //case insensitive exact search
+                bloodBankResults = bloodBankResults.Where(e => e.Status.Equals(status, StringComparison.OrdinalIgnoreCase));
+            }
+            
+            return bloodBankResults.ToList();
+
+        }
+
+
+        
+       
+        //To Check Valid bloodBankEntry
         private string IsValidEntry(BloodBankEntry entry)
         {
             
