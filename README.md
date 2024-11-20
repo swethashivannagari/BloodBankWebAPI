@@ -54,4 +54,10 @@ This is a **Blood Bank Management System** developed using **ASP.NET Core Web AP
 - **CollectionDate**: The date the blood was collected.
 - **ExpirationDate**: The date the blood donation expires.
 - **Status**: The status of the blood bank entry (e.g., "Available", "Requested", or "Expired").
+###
+![image](https://github.com/user-attachments/assets/d1b9988f-f752-4d64-922b-f1a422cf98ee)
+### Schema
+![image](https://github.com/user-attachments/assets/51f0ff7f-3c5f-4f6b-81d2-86427068cb70)
+
+
 ## **For more detailed explaination with screenshots, refer to the [documentation](https://github.com/swethashivannagari/BloodBankWebAPI/blob/master/BloodBankDoc.docx).**
