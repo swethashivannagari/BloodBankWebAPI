@@ -9,6 +9,7 @@ namespace BloodBankWebAPI.Controllers
     [ApiController]
     public class BloodBankController : ControllerBase
     {
+        //Adding default entries in bloodbank list
         static List<BloodBankEntry> BloodBanksList = new List<BloodBankEntry>
         {
             new BloodBankEntry
@@ -18,10 +19,10 @@ namespace BloodBankWebAPI.Controllers
                 Age=30,
                 BloodType="A+",
                 ContactInfo = "alice.johnson@example.com",
-            Quantity = 500,
-            CollectionDate = DateTime.Now.AddDays(-2),
-            ExpirationDate = DateTime.Now.AddDays(28),
-            Status = "Available"
+                Quantity = 500,
+                CollectionDate = DateTime.Now.AddDays(-2),
+                ExpirationDate = DateTime.Now.AddDays(28),
+                Status = "Available"
             },
             new BloodBankEntry
         {
@@ -37,7 +38,7 @@ namespace BloodBankWebAPI.Controllers
         },
          new BloodBankEntry
         {
-              Id=3,
+            Id=3,
             DonorName = "Charlie",
             Age = 35,
             BloodType = "B+",
@@ -144,7 +145,7 @@ namespace BloodBankWebAPI.Controllers
                 //case insensitive and partial search
                 bloodBankResults = bloodBankResults.Where(e => e.DonorName.Contains(donorName, StringComparison.OrdinalIgnoreCase));
             }
-            return bloodBankResults.ToList();
+            return bloodBankResults.Any() ? bloodBankResults.ToList() : NotFound("No blood bank entries found.");
         }
 
         //Search for blood bank entries based on BloodType
@@ -185,7 +186,7 @@ namespace BloodBankWebAPI.Controllers
               return BadRequest("Status parameter is required.");
                 
             }
-            return bloodBankResults.ToList().Any()?bloodBankResults.ToList(): NotFound("No blood bank entries found."); ;
+            return bloodBankResults.Any()?bloodBankResults.ToList(): NotFound("No blood bank entries found.");
         }
 
         //sorting
@@ -213,7 +214,7 @@ namespace BloodBankWebAPI.Controllers
             return bloodBankResults.ToList();
         }
 
-        //Search for blood bank entries
+        //Search for blood bank entries with multiple parameters
         [HttpGet("filter")]
         public ActionResult<IEnumerable<BloodBankEntry>> SearchEntries(string bloodType = null, string? status=null,string donorName = null)
         {
@@ -244,6 +245,15 @@ namespace BloodBankWebAPI.Controllers
         {
             
             var errors = new List<string>();
+            // List of valid blood types
+            string[] validBloodTypes = { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" };
+
+            // Check if the bloodType is in the valid list
+            if (!validBloodTypes.Contains(entry.BloodType.ToUpper()))
+            {
+                errors.Add("Invalid Blood Group.");
+            }
+            
             //age validation
             if (entry.Age < 18 || entry.Age > 65)
             {
